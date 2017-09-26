@@ -5,7 +5,12 @@ import numpy as np
 
 from sklearn.preprocessing import LabelEncoder
 from sklearn.base import TransformerMixin
+from sklearn.metrics import accuracy_score
+from sklearn.model_selection import train_test_split
 
+'''
+实验数据使用kaggle Titanic的数据
+'''
 
 train_df = pd.read_csv('./data/train.csv', header=0)
 test_df = pd.read_csv('./data/test.csv', header=0)
@@ -46,7 +51,7 @@ nonnumeric_columns = ['Sex']
 # in case their distribution is slightly different
 big_X = train_df[feature_columns_to_use].append(
     test_df[feature_columns_to_use])
-big_X_imputed = DataFrameImputer().fit_transform(big_X)   
+big_X_imputed = DataFrameImputer().fit_transform(big_X)
 
 # 接下来需要做的就是将非数值型的数据转换成为一个数值型的数据
 le = LabelEncoder()
@@ -59,7 +64,13 @@ test_X = big_X_imputed[train_df.shape[0]::].as_matrix()
 train_y = train_df['Survived']
 
 '''
-需要知道的是什么是网格搜索，自动获取到比较好的学习率
+如果想在训练数据中再分出一部分作为验证集使用，可以使用train_test_split
+train_X, validate_X, train_y, validate_y = train_test_split(train_X, train_y, test_size=0.33, random_state=42)
+这里的random_state是一个整数，如果random_state是一个整数，则每次使用这个函数得到的结果是一样的
+如果random_state没有设置一个值，则每次得到的结果则不一样
+'''
+'''
+网格搜索与K折交叉验证以自动获取较好的学习率
 需要知道如何找到比较重要的特征
 '''
 
